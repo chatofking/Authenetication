@@ -4,14 +4,15 @@ import CustomInput from '../../components/CustomInput';
 import CustomButton from '../../components/CustomButton';
 import SocialSignInButtons from '../../components/SocialSignInButtons';
 import { useNavigation } from '@react-navigation/native';
+import {useForm} from 'react-hook-form';
 
 const NewPasswordScreen = () => {
-  const [code, setCode] = useState('');
-  const [newPassword, setNewPassword] = useState('');
+  const {control, handleSubmit} = useForm();
 
   const navigation = useNavigation();
 
-  const onSubmitPressed = () => {
+  const onSubmitPressed = (data) => {
+    console.warn(data);
     navigation.navigate('Home');
   };
 
@@ -24,11 +25,28 @@ const NewPasswordScreen = () => {
       <View style={styles.root}>
         <Text style={styles.title}>Reset your password</Text>
 
-        <CustomInput placeholder="Code" value={code} setValue={setCode} />
+        <CustomInput 
+          placeholder="Code" 
+          name="code"
+          control={control}
+          rules={{required: 'Code is required'}}
+        />
 
-        <CustomInput placeholder="Enter your new password" value={newPassword} setValue={setNewPassword} secureTextEntry/>
+        <CustomInput 
+          placeholder="Enter your new password" 
+          name="password"
+          control={control}
+          secureTextEntry
+          rules={{
+            required: 'Password is required',
+            minLength: {
+              value: 8,
+             message: 'Password Should be at least 8 characters long'
+            },
+          }}    
+        />
 
-        <CustomButton text="Submit" onPress={onSubmitPressed} />
+        <CustomButton text="Submit" onPress={handleSubmit(onSubmitPressed)} />
 
         <CustomButton
           text="Back to Sign in"
